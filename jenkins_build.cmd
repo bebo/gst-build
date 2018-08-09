@@ -69,6 +69,9 @@ move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
 %RUN_MESON% configure build -Dgi=disabled
 %RUN_MESON% configure build -Dpygobject=enabled
+
+%RUN_MESON% configure build
+
 ninja -C build
 @if errorlevel 1 (
   exit /b %errorlevel%
