@@ -1,5 +1,6 @@
 [wrap-git]
 directory=gst-python
-url=https://anongit.freedesktop.org/git/gstreamer/gst-python.git
+url=git@github.com:bebo/gst-python.git
+#url=https://anongit.freedesktop.org/git/gstreamer/gst-python.git
 push-url=ssh://git.freedesktop.org/git/gstreamer/gst-python
-revision=master
+revision=bebo_build
