@@ -47,8 +47,9 @@ REM bootstrap
 
 cd bootstrap
 %RUN_MESON% build
-%RUN_MESON% configure build -Dgi=enabled
-%RUN_MESON% configure build -Dpygobject=disabled
+%RUN_MESON% configure build -D gi=enabled
+%RUN_MESON% configure build -D pygobject=disabled
+%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 
 @if errorlevel 1 (
   exit /b %errorlevel%
@@ -89,14 +90,13 @@ mkdir build
   exit /b %errorlevel%
 )
 
-
-
 %RUN_MESON% configure build -D rtsp_server=disabled 
 %RUN_MESON% configure build -D gstreamer:introspection=enabled
 %RUN_MESON% configure build -D gst-plugins-base:introspection=enabled
 %RUN_MESON% configure build -D gst-plugins-bad:gl=enabled
 %RUN_MESON% configure build -D gst-plugins-good:jpeg=enabled
 %RUN_MESON% configure build -D python=enabled
+%RUN_MESON% configure build -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides
 
 ninja -C build
 @if errorlevel 1 (
@@ -107,6 +107,9 @@ ninja -C build install
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
+XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
+rd /s /q %DESTDIR%\lib\python3.6\site-packages
 
 set FILEPATH=%CD%\%FILENAME%
 
