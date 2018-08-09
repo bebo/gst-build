@@ -15,6 +15,8 @@ py -3 -m zipfile -e python.zip %DESTDIR%
   exit /b %errorlevel%
 )
 
+assoc .py=Python.File
+ftype Python.File=%DESTDIR%\python.exe "%1" %*
 
 set PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
 SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
