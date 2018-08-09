@@ -59,6 +59,7 @@ ninja -C build
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
 ninja -C build install
 @if errorlevel 1 (
   exit /b %errorlevel%
@@ -70,14 +71,14 @@ pushd
 cd %DESTDIR%
 py -3 -m zipfile -c %FILEPATH% .
 
-if errorlevel 1 (
+@if errorlevel 1 (
   exit /b %errorlevel%
 )
 popd
 
-cd ..
 "C:\Program Files\Amazon\AWSCLI\aws.exe" s3api put-object --bucket bebo-app --key repo/gst-bebo/%FILENAME% --body %FILENAME%
 
-if errorlevel 1 (
+@if errorlevel 1 (
   exit /b %errorlevel%
 )
+@echo uploaded "gst-bebo/%FILENAME%"
