@@ -10,6 +10,7 @@ set FILENAME=gst-bebo_%TAG%.zip
 rd /s /q %DESTDIR%
 del /q %FILENAME%
 rd /s /q build
+rd /s /q bootstrap\build
 
 set errorlevel=
 mkdir %DESTDIR%
@@ -42,12 +43,53 @@ python -m pip install meson
   exit /b %errorlevel%
 )
 
+REM bootstrap 
+
+cd bootstrap
+%RUN_MESON% build
+%RUN_MESON% configure build -Dgi=enabled
+%RUN_MESON% configure build -Dpygobject=disabled
+
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+ninja -C build
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+ninja -C build install
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+REM FIXME:
+move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
+
+%RUN_MESON% configure build -Dgi=disabled
+%RUN_MESON% configure build -Dpygobject=enabled
+ninja -C build
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+ninja -C build install
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+cd ..
+
+REM main bulid
+
 mkdir build
 %RUN_MESON% build
 
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
+
 
 %RUN_MESON% configure build -D rtsp_server=disabled 
 %RUN_MESON% configure build -D gstreamer:introspection=enabled

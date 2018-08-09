@@ -1,0 +1,2 @@
+option('gi', type : 'feature', value : 'disabled')
+option('pygobject', type : 'feature', value : 'disabled')
