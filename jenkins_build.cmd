@@ -5,7 +5,12 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxili
 set errorlevel=
 
 SET DESTDIR=C:\bebo-gst
+set FILENAME=gst-bebo_%TAG%.zip
+
 rd /s /q %DESTDIR%
+del /q %FILENAME%
+rd /s /q build
+
 set errorlevel=
 mkdir %DESTDIR%
 
@@ -44,6 +49,7 @@ mkdir build
   exit /b %errorlevel%
 )
 
+%RUN_MESON% configure build -D rtsp_server=disabled 
 %RUN_MESON% configure build -D gstreamer:introspection=enabled
 %RUN_MESON% configure build -D gst-plugins-base:introspection=enabled
 %RUN_MESON% configure build -D gst-plugins-bad:gl=enabled
@@ -55,5 +61,23 @@ ninja -C build
 )
 ninja -C build install
 @if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+set FILEPATH=%CD%\%FILENAME%
+
+pushd
+cd %DESTDIR%
+py -3 -m zipfile -c %FILEPATH% .
+
+if errorlevel 1 (
+  exit /b %errorlevel%
+)
+popd
+
+cd ..
+"C:\Program Files\Amazon\AWSCLI\aws.exe" s3api put-object --bucket bebo-app --key repo/gst-bebo/%FILENAME% --body %FILENAME%
+
+if errorlevel 1 (
   exit /b %errorlevel%
 )
