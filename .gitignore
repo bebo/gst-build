@@ -37,4 +37,10 @@ subprojects/libnice/
 subprojects/libunwind/
 subprojects/proxy-libintl/
 subprojects/zlib/
+bootstrap/subprojects/glib/
+bootstrap/subprojects/gobject-introspection/
+bootstrap/subprojects/libffi/
+bootstrap/subprojects/proxy-libintl/
+bootstrap/subprojects/pygobject-3.0/
+bootstrap/subprojects/zlib/
 prefix/
