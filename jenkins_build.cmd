@@ -54,6 +54,7 @@ mkdir build
 %RUN_MESON% configure build -D gst-plugins-base:introspection=enabled
 %RUN_MESON% configure build -D gst-plugins-bad:gl=enabled
 %RUN_MESON% configure build -D gst-plugins-good:jpeg=enabled
+%RUN_MESON% configure build -D python=enabled
 
 ninja -C build
 @if errorlevel 1 (
