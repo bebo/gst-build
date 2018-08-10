@@ -1,9 +1,10 @@
 
 @echo on
+set PATH=C:\Windows\system32;C:\Windows;C:\Users\build\bin
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" x64
 @echo on
-ninja --version
 echo %PATH%
+ninja --version
 
 set errorlevel=
 

@@ -16,8 +16,8 @@ JENKINS_TOKEN = '5czPRJVNHT9ukq46'
 
 IS_WINDOWS = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
 
-curl = IS_WINDOWS ? "%{CURL} -L --write-out %{http_code}" : "curl -s --write-out %{http_code}"
-curl_test = IS_WINDOWS ? "%{CURL} -L --write-out %{http_code} -so nul" : "curl --write-out %{http_code} -so /dev/null"
+curl = IS_WINDOWS ? "#{CURL} -L --write-out %{http_code}" : "curl -s --write-out %{http_code}"
+curl_test = IS_WINDOWS ? "#{CURL} -L --write-out %{http_code} -so nul" : "curl --write-out %{http_code} -so /dev/null"
 
 def bump_version(t)
     elems = t.split(".").map{|x| x.to_i}
