@@ -5,6 +5,7 @@ call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxili
 @echo on
 echo %PATH%
 ninja --version
+git --version
 
 set errorlevel=
 
@@ -135,8 +136,7 @@ rd /s /q %DESTDIR%\lib\python3.6\site-packages
 
 set FILEPATH=%CD%\%FILENAME%
 
-pushd
-cd %DESTDIR%
+pushd %DESTDIR%
 py -3 -m zipfile -c %FILEPATH% .
 
 @if errorlevel 1 (
