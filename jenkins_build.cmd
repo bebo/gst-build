@@ -2,6 +2,8 @@
 @echo on
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" x64
 @echo on
+ninja --version
+
 set errorlevel=
 
 SET DESTDIR=C:\bebo-gst
@@ -49,7 +51,6 @@ cd bootstrap
 %RUN_MESON% build
 %RUN_MESON% configure build -D gi=enabled
 %RUN_MESON% configure build -D pygobject=disabled
-%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 
 @if errorlevel 1 (
   exit /b %errorlevel%
@@ -69,7 +70,8 @@ move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
 %RUN_MESON% configure build -Dgi=disabled
 %RUN_MESON% configure build -Dpygobject=enabled
-
+ninja -C build reconfigure
+%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 %RUN_MESON% configure build
 
 ninja -C build
