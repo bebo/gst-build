@@ -57,6 +57,12 @@ dir
   exit /b %errorlevel%
 )
 
+@REM for some reason on jenkins it doesn't dete changes?
+ninja -C build reconfigure
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
 ninja -C build
 @if errorlevel 1 (
   exit /b %errorlevel%
@@ -74,6 +80,11 @@ move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 ninja -C build reconfigure
 %RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 %RUN_MESON% configure build
+
+ninja -C build reconfigure
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
 
 ninja -C build
 @if errorlevel 1 (
