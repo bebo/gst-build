@@ -48,6 +48,7 @@ python -m pip install meson
 REM bootstrap 
 
 cd bootstrap
+dir
 %RUN_MESON% build
 %RUN_MESON% configure build -D gi=enabled
 %RUN_MESON% configure build -D pygobject=disabled
