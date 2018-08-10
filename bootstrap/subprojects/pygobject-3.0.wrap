@@ -1,5 +1,6 @@
 [wrap-git]
 directory=pygobject-3.0
-url=https://gitlab.gnome.org/GNOME/pygobject.git
-push-url=git@gitlab.gnome.org:GNOME/pygobject.git
-revision=master
+#url=https://gitlab.gnome.org/GNOME/pygobject.git
+url=git@github.com:bebo/pygobject.git
+#push-url=git@gitlab.gnome.org:GNOME/pygobject.git
+revision=bebo_build
