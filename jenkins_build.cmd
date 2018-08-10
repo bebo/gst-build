@@ -1,6 +1,6 @@
 
 @echo on
-set PATH=C:\Windows\system32;C:\Windows;C:\Users\build\bin
+set PATH=C:\Windows\system32;C:\Windows;%USERPROFILE%\bin;C:\Program Files\Git\cmd
 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Auxiliary\Build\vcvarsall.bat" x64
 @echo on
 echo %PATH%
@@ -12,6 +12,9 @@ SET DESTDIR=C:\bebo-gst
 set FILENAME=gst-bebo_%TAG%.zip
 
 rd /s /q %DESTDIR%
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
 del /q %FILENAME%
 rd /s /q build
 rd /s /q bootstrap\build
