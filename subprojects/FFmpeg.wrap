@@ -1,0 +1,5 @@
+[wrap-git]
+directory=ffmpeg
+url=git@github.com:bebo/mesonwrap-ffmpeg.git
+push-url=git@github.com:bebo/mesonwrap-ffmpeg.git
+revision=master
