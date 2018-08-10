@@ -11,6 +11,7 @@ set errorlevel=
 
 SET DESTDIR=C:\bebo-gst
 set FILENAME=gst-bebo_%TAG%.zip
+set FILENAME_DEV=gst-bebo_%TAG%_dev.zip
 
 rd /s /q %DESTDIR%
 @if errorlevel 1 (
@@ -19,6 +20,7 @@ rd /s /q %DESTDIR%
 del /q %FILENAME%
 rd /s /q build
 rd /s /q bootstrap\build
+rd /s /q dist-dev
 
 set errorlevel=
 mkdir %DESTDIR%
@@ -144,9 +146,37 @@ py -3 -m zipfile -c %FILEPATH% .
 )
 popd
 
+
 "C:\Program Files\Amazon\AWSCLI\aws.exe" s3api put-object --bucket bebo-app --key repo/gst-bebo/%FILENAME% --body %FILENAME%
 
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
 @echo uploaded "gst-bebo/%FILENAME%"
+
+@REM dev files
+
+set FILEPATH=%CD%\%FILENAME_DEV%
+mkdir dist-dev
+pushd dist-dev
+xcopy /s /a /q %DESTDIR%\include\GL include\GL\
+xcopy /s /a /q %DESTDIR%\include\glib-2.0 include\glib-2.0\
+xcopy /s /a /q %DESTDIR%\include\gstreamer-1.0 include\gstreamer1.0\
+xcopy /s /a /q %DESTDIR%\lib\glib-2.0 lib\glib-2.0\
+xcopy /a /q %DESTDIR%\lib\*.lib lib\
+
+py -3 -m zipfile -c %FILEPATH% .
+
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+popd
+
+"C:\Program Files\Amazon\AWSCLI\aws.exe" s3api put-object --bucket bebo-app --key repo/gst-bebo/%FILENAME_DEV% --body %FILENAME_DEV%
+
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+@echo uploaded "gst-bebo/%FILENAME_DEV%"
