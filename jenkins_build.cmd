@@ -133,8 +133,13 @@ ninja -C build install
   exit /b %errorlevel%
 )
 
+@REM FIXME - misct workarounds
+
 XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
 rd /s /q %DESTDIR%\lib\python3.6\site-packages
+
+XCOPY /S %DESTDIR%\lib\gstreamer-1.0\include %DESTDIR%\include
+rd /s /q %DESTDIR%\lib\gstreamer-1.0\include
 
 set FILEPATH=%CD%\%FILENAME%
 
@@ -156,6 +161,7 @@ popd
 @echo uploaded "gst-bebo/%FILENAME%"
 
 @REM dev files
+
 
 set FILEPATH=%CD%\%FILENAME_DEV%
 mkdir dist-dev
