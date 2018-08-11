@@ -122,6 +122,7 @@ mkdir build
 %RUN_MESON% configure build -D gst-plugins-good:jpeg=enabled
 %RUN_MESON% configure build -D python=enabled
 %RUN_MESON% configure build -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides
+%RUN_MESON% configure build -D gst-plugins-ugly:x264=enabled
 
 ninja -C build
 @if errorlevel 1 (
@@ -168,7 +169,7 @@ mkdir dist-dev
 pushd dist-dev
 xcopy /s /a /q %DESTDIR%\include\GL include\GL\
 xcopy /s /a /q %DESTDIR%\include\glib-2.0 include\glib-2.0\
-xcopy /s /a /q %DESTDIR%\include\gstreamer-1.0 include\gstreamer1.0\
+xcopy /s /a /q %DESTDIR%\include\gstreamer-1.0 include\gstreamer-1.0\
 xcopy /s /a /q %DESTDIR%\lib\glib-2.0 lib\glib-2.0\
 xcopy /a /q %DESTDIR%\lib\*.lib lib\
 
