@@ -1,5 +1,6 @@
 [wrap-git]
 directory=gst-plugins-ugly
-url=https://anongit.freedesktop.org/git/gstreamer/gst-plugins-ugly.git
-push-url=ssh://git.freedesktop.org/git/gstreamer/gst-plugins-ugly
-revision=master
+url = git@github.com:bebo/gst-plugins-ugly.git
+# url=https://anongit.freedesktop.org/git/gstreamer/gst-plugins-ugly.git
+# push-url=ssh://git.freedesktop.org/git/gstreamer/gst-plugins-ugly
+revision=bebo_build
