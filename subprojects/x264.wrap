@@ -1,0 +1,5 @@
+[wrap-git]
+directory=x264
+url=git@github.com:bebo/mesonwrap-x264.git
+push-url=git@github.com:bebo/mesonwrap-x264.git
+revision=7d0ff22
