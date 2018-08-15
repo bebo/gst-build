@@ -2,4 +2,4 @@
 directory=ffmpeg
 url=git@github.com:bebo/mesonwrap-ffmpeg.git
 push-url=git@github.com:bebo/mesonwrap-ffmpeg.git
-revision=master
+revision=88a4ebb24646132f9a04e0c14b6da0fadafd56ed

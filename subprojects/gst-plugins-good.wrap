@@ -3,4 +3,4 @@ directory=gst-plugins-good
 url=git@github.com:bebo/gst-plugins-good.git
 #url=https://anongit.freedesktop.org/git/gstreamer/gst-plugins-good.git
 push-url=ssh://git.freedesktop.org/git/gstreamer/gst-plugins-good
-revision=bebo_build
+revision=5e4f215bfb8c88fc7f18d021be2d267e73141924

@@ -7,11 +7,20 @@ echo %PATH%
 ninja --version
 git --version
 
+
+set MESON="git+https://github.com/bebo/meson.git@scheme_nt#egg=meson"
+
 set errorlevel=
 
 SET DESTDIR=C:\bebo-gst
 set FILENAME=gst-bebo_%TAG%.zip
 set FILENAME_DEV=gst-bebo_%TAG%_dev.zip
+
+REM SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
+SET RUN_MESON=meson
+
+SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
+SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
 
 rd /s /q %DESTDIR%
 @if errorlevel 1 (
@@ -32,10 +41,6 @@ py -3 -m zipfile -e python.zip %DESTDIR%
   exit /b %errorlevel%
 )
 
-SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
-
-SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
-SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
 
 py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://github.com/lexxmark/winflexbison/releases/download/v2.5.14/win_flex_bison-2.5.14.zip" win_flex_bison.zip
 py -3 -m zipfile -e win_flex_bison.zip win_flex_bison
@@ -47,7 +52,10 @@ py -3 -m zipfile -e pkg-config-lite-0.28-1.zip .
   exit /b %errorlevel%
 )
 
-python -m pip install meson
+@REM pushd C:\Users\Administrator\meson
+@REM python setup.py install
+@REM popd
+python -m pip install %MESON%
 
 @if errorlevel 1 (
   exit /b %errorlevel%
@@ -83,8 +91,8 @@ ninja -C build install
 REM FIXME:
 move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
-%RUN_MESON% configure build -Dgi=disabled
-%RUN_MESON% configure build -Dpygobject=enabled
+%RUN_MESON% configure build -D gi=disabled
+%RUN_MESON% configure build -D pygobject=enabled
 ninja -C build reconfigure
 %RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 %RUN_MESON% configure build
@@ -123,6 +131,9 @@ mkdir build
 %RUN_MESON% configure build -D python=enabled
 %RUN_MESON% configure build -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides
 %RUN_MESON% configure build -D gst-plugins-ugly:x264=enabled
+%RUN_MESON% configure build -D gst-plugins-bad:iqa=disabled
+%RUN_MESON% configure build -D gst-plugins-bad:webrtc=disabled
+%RUN_MESON% configure build -D gst-plugins-bad:openh264=disabled
 
 ninja -C build
 @if errorlevel 1 (
@@ -136,8 +147,8 @@ ninja -C build install
 
 @REM FIXME - misct workarounds
 
-XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
-rd /s /q %DESTDIR%\lib\python3.6\site-packages
+REM XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
+REM rd /s /q %DESTDIR%\lib\python3.6\site-packages
 
 XCOPY /S %DESTDIR%\lib\gstreamer-1.0\include %DESTDIR%\include
 rd /s /q %DESTDIR%\lib\gstreamer-1.0\include
