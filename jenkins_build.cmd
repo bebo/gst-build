@@ -16,8 +16,8 @@ SET DESTDIR=C:\bebo-gst
 set FILENAME=gst-bebo_%TAG%.zip
 set FILENAME_DEV=gst-bebo_%TAG%_dev.zip
 
-REM SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
-SET RUN_MESON=meson
+SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
+@REM SET RUN_MESON=meson
 
 SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
 SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
