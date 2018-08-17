@@ -75,13 +75,14 @@ ninja -C build install
 REM FIXME:
 move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
-%RUN_MESON% configure build -Dgi=disabled
-%RUN_MESON% configure build -Dpygobject=enabled
+%RUN_MESON% configure build -D gi=disabled
+%RUN_MESON% configure build -D pygobject=enabled
 ninja -C build reconfigure
-%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
-%RUN_MESON% configure build
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
 
-ninja -C build reconfigure
+%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
