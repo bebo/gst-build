@@ -56,17 +56,8 @@ python -m pip install %MESON%
 REM bootstrap 
 
 cd bootstrap
-dir
-%RUN_MESON% build
-%RUN_MESON% configure build -D gi=enabled
-%RUN_MESON% configure build -D pygobject=disabled
+%RUN_MESON% build -D gi=enabled -D pygobject=disabled
 
-@if errorlevel 1 (
-  exit /b %errorlevel%
-)
-
-@REM for some reason on jenkins it doesn't dete changes?
-ninja -C build reconfigure
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
@@ -80,6 +71,7 @@ ninja -C build install
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
 REM FIXME:
 move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
