@@ -7,11 +7,17 @@ echo %PATH%
 ninja --version
 git --version
 
+set MESON="git+https://github.com/bebo/meson.git@scheme_nt#egg=meson"
+
 set errorlevel=
 
 SET DESTDIR=C:\bebo-gst
 set FILENAME=gst-bebo_%TAG%.zip
 set FILENAME_DEV=gst-bebo_%TAG%_dev.zip
+
+SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
+SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
+SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
 
 rd /s /q %DESTDIR%
 @if errorlevel 1 (
@@ -25,17 +31,11 @@ rd /s /q dist-dev
 set errorlevel=
 mkdir %DESTDIR%
 
-
 py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://s3-us-west-1.amazonaws.com/bebo-app/repo/python/python-3.6.6-amd64-orig.zip" python.zip
 py -3 -m zipfile -e python.zip %DESTDIR%
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
-
-SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
-
-SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
-SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
 
 py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://github.com/lexxmark/winflexbison/releases/download/v2.5.14/win_flex_bison-2.5.14.zip" win_flex_bison.zip
 py -3 -m zipfile -e win_flex_bison.zip win_flex_bison
@@ -47,7 +47,7 @@ py -3 -m zipfile -e pkg-config-lite-0.28-1.zip .
   exit /b %errorlevel%
 )
 
-python -m pip install meson
+python -m pip install %MESON%
 
 @if errorlevel 1 (
   exit /b %errorlevel%
