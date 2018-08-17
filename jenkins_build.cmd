@@ -102,20 +102,23 @@ cd ..
 REM main bulid
 
 mkdir build
-%RUN_MESON% build
+%RUN_MESON% build ^
+    -D rtsp_server=disabled  ^
+    -D gstreamer:introspection=enabled ^
+    -D gst-plugins-base:introspection=enabled ^
+    -D gst-plugins-bad:gl=enabled ^
+    -D gst-plugins-good:jpeg=enabled ^
+    -D python=enabled ^
+    -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides ^
+    -D gst-plugins-ugly:x264=enabled ^
+    -D gst-plugins-bad:iqa=disabled ^
+    -D gst-plugins-bad:webrtc=disabled ^
+    -D gst-plugins-bad:openh264=disabled ^
+    -D gst-plugins-bad:bluez=disabled
 
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
-
-%RUN_MESON% configure build -D rtsp_server=disabled 
-%RUN_MESON% configure build -D gstreamer:introspection=enabled
-%RUN_MESON% configure build -D gst-plugins-base:introspection=enabled
-%RUN_MESON% configure build -D gst-plugins-bad:gl=enabled
-%RUN_MESON% configure build -D gst-plugins-good:jpeg=enabled
-%RUN_MESON% configure build -D python=enabled
-%RUN_MESON% configure build -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides
-%RUN_MESON% configure build -D gst-plugins-ugly:x264=enabled
 
 ninja -C build
 @if errorlevel 1 (
