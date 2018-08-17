@@ -132,8 +132,8 @@ ninja -C build install
 
 @REM FIXME - misct workarounds
 
-XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
-rd /s /q %DESTDIR%\lib\python3.6\site-packages
+REM XCOPY /S %DESTDIR%\lib\python3.6\site-packages %DESTDIR%\lib\site-packages\
+REM rd /s /q %DESTDIR%\lib\python3.6\site-packages
 
 XCOPY /S %DESTDIR%\lib\gstreamer-1.0\include %DESTDIR%\include
 rd /s /q %DESTDIR%\lib\gstreamer-1.0\include
