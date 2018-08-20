@@ -1,5 +1,5 @@
 [wrap-git]
 directory=gstreamer
-url=git@github.com:bebo/gstreamer1.git
+url=git@github.com:bebo/gstreamer-1.git
 # revision=master
 revision=7ef5b28e4027de6cb2618d61413031a0e31cf7c9
