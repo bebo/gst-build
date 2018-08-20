@@ -7,7 +7,6 @@ echo %PATH%
 ninja --version
 git --version
 
-
 set MESON="git+https://github.com/bebo/meson.git@scheme_nt#egg=meson"
 
 set errorlevel=
@@ -17,8 +16,6 @@ set FILENAME=gst-bebo_%TAG%.zip
 set FILENAME_DEV=gst-bebo_%TAG%_dev.zip
 
 SET RUN_MESON=%DESTDIR%\python.exe %DESTDIR%\Scripts\meson.py
-@REM SET RUN_MESON=meson
-
 SET PATH=%DESTDIR%;%DESTDIR%\Scripts;%DESTDIR%\bin;%CD%\pkg-config-lite-0.28-1\bin;%CD%\win_flex_bison;%PATH%
 SET PKG_CONFIG_PATH=%DESTDIR%\lib\pkgconfig
 
@@ -34,13 +31,11 @@ rd /s /q dist-dev
 set errorlevel=
 mkdir %DESTDIR%
 
-
 py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://s3-us-west-1.amazonaws.com/bebo-app/repo/python/python-3.6.6-amd64-orig.zip" python.zip
 py -3 -m zipfile -e python.zip %DESTDIR%
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
-
 
 py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://github.com/lexxmark/winflexbison/releases/download/v2.5.14/win_flex_bison-2.5.14.zip" win_flex_bison.zip
 py -3 -m zipfile -e win_flex_bison.zip win_flex_bison
@@ -52,9 +47,6 @@ py -3 -m zipfile -e pkg-config-lite-0.28-1.zip .
   exit /b %errorlevel%
 )
 
-@REM pushd C:\Users\Administrator\meson
-@REM python setup.py install
-@REM popd
 python -m pip install %MESON%
 
 @if errorlevel 1 (
@@ -64,17 +56,8 @@ python -m pip install %MESON%
 REM bootstrap 
 
 cd bootstrap
-dir
-%RUN_MESON% build
-%RUN_MESON% configure build -D gi=enabled
-%RUN_MESON% configure build -D pygobject=disabled
+%RUN_MESON% build -D gi=enabled -D pygobject=disabled
 
-@if errorlevel 1 (
-  exit /b %errorlevel%
-)
-
-@REM for some reason on jenkins it doesn't dete changes?
-ninja -C build reconfigure
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
@@ -88,16 +71,18 @@ ninja -C build install
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
+
 REM FIXME:
 move %DESTDIR%\lib\gobject-introspection\giscanner %DESTDIR%\lib\site-packages\
 
 %RUN_MESON% configure build -D gi=disabled
 %RUN_MESON% configure build -D pygobject=enabled
 ninja -C build reconfigure
-%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
-%RUN_MESON% configure build
+@if errorlevel 1 (
+  exit /b %errorlevel%
+)
 
-ninja -C build reconfigure
+%RUN_MESON% configure build -D pygobject-3.0:pycairo=false
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
@@ -117,23 +102,23 @@ cd ..
 REM main bulid
 
 mkdir build
-%RUN_MESON% build
+%RUN_MESON% build ^
+    -D rtsp_server=disabled  ^
+    -D gstreamer:introspection=enabled ^
+    -D gst-plugins-base:introspection=enabled ^
+    -D gst-plugins-bad:gl=enabled ^
+    -D gst-plugins-good:jpeg=enabled ^
+    -D python=enabled ^
+    -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides ^
+    -D gst-plugins-ugly:x264=enabled ^
+    -D gst-plugins-bad:iqa=disabled ^
+    -D gst-plugins-bad:webrtc=disabled ^
+    -D gst-plugins-bad:openh264=disabled ^
+    -D gst-plugins-bad:bluez=disabled
 
 @if errorlevel 1 (
   exit /b %errorlevel%
 )
-
-%RUN_MESON% configure build -D rtsp_server=disabled 
-%RUN_MESON% configure build -D gstreamer:introspection=enabled
-%RUN_MESON% configure build -D gst-plugins-base:introspection=enabled
-%RUN_MESON% configure build -D gst-plugins-bad:gl=enabled
-%RUN_MESON% configure build -D gst-plugins-good:jpeg=enabled
-%RUN_MESON% configure build -D python=enabled
-%RUN_MESON% configure build -D gst-python:pygi-overrides-dir=\Lib\site-packages\gi\overrides
-%RUN_MESON% configure build -D gst-plugins-ugly:x264=enabled
-%RUN_MESON% configure build -D gst-plugins-bad:iqa=disabled
-%RUN_MESON% configure build -D gst-plugins-bad:webrtc=disabled
-%RUN_MESON% configure build -D gst-plugins-bad:openh264=disabled
 
 ninja -C build
 @if errorlevel 1 (

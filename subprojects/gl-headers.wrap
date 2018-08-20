@@ -2,4 +2,5 @@
 directory=gl-headers
 url=https://github.com/centricular/gl-headers.git
 push-url=git@github.com:centricular/gl-headers.git
+# revision=master
 revision=c97c59bc2b7beff7e9a39eb9b9cd837a07d9816e
