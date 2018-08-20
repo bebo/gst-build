@@ -31,7 +31,7 @@ rd /s /q dist-dev
 set errorlevel=
 mkdir %DESTDIR%
 
-py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://s3-us-west-1.amazonaws.com/bebo-app/repo/python/python-3.6.6-amd64-orig.zip" python.zip
+py -3 -c "import urllib.request, sys; urllib.request.urlretrieve(*sys.argv[1:])" "https://s3-us-west-1.amazonaws.com/bebo-app/repo/python/python-3.6.6-amd64-bebo-signed-002.zip" python.zip
 py -3 -m zipfile -e python.zip %DESTDIR%
 @if errorlevel 1 (
   exit /b %errorlevel%
