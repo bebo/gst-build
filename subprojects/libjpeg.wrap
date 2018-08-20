@@ -1,5 +1,5 @@
 [wrap-git]
-directory=libjpeg
+directory=libjpeg-turbo
 url=git@github.com:bebo/mesonwrap-libjpeg-turbo.git
 push-url=git@github.com:bebo/mesonwrap-libjpeg-turbo.git
 revision=master
