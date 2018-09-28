@@ -21,8 +21,7 @@ def checkout_subprojects(worktree_dir, branch):
     worktree_subdir = os.path.join(worktree_dir, "subprojects")
 
     meson = get_meson()
-    installed_s = subprocess.check_output([sys.executable, meson, 'introspect',
-                                            options.builddir, '--projectinfo'])
+    installed_s = subprocess.check_output(meson + ['introspect', options.builddir, '--projectinfo'])
     for subproj in json.loads(installed_s.decode())["subprojects"]:
         repo_name = subproj["name"]
         if not repo_name.startswith("gst"):
@@ -50,7 +49,7 @@ def checkout_worktree(repo_name, repo_dir, worktree_dir, branch):
 
         return False
 
-    commit_message = git("show", repository_path=repo_dir).split("\n")
+    commit_message = git("show", "--shortstat", repository_path=repo_dir).split("\n")
     print(u"  -> %s%s%s - %s" % (Colors.HEADER, repo_dir, Colors.ENDC,
                                     commit_message[4].strip()))
 

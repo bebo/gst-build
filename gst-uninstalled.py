@@ -15,6 +15,7 @@ import tempfile
 from distutils.sysconfig import get_python_lib
 
 from common import get_meson
+from common import git
 
 SCRIPTDIR = os.path.dirname(os.path.realpath(__file__))
 PREFIX_DIR = os.path.join(SCRIPTDIR, 'prefix')
@@ -29,7 +30,7 @@ def prepend_env_var(env, var, value):
     env[var] = env[var].replace(os.pathsep + os.pathsep, os.pathsep).strip(os.pathsep)
 
 
-def get_subprocess_env(options):
+def get_subprocess_env(options, gst_version):
     env = os.environ.copy()
 
     env["CURRENT_GST"] = os.path.normpath(SCRIPTDIR)
@@ -42,8 +43,8 @@ def get_subprocess_env(options):
     prepend_env_var(env, "PATH", os.path.normpath(
         "%s/subprojects/gst-devtools/validate/tools" % options.builddir))
     prepend_env_var(env, "PATH", os.path.join(SCRIPTDIR, 'meson'))
-    env["GST_VERSION"] = options.gst_version
-    env["GST_ENV"] = 'gst-' + options.gst_version
+    env["GST_VERSION"] = gst_version
+    env["GST_ENV"] = 'gst-' + gst_version
     env["GST_PLUGIN_SYSTEM_PATH"] = ""
     env["GST_PLUGIN_SCANNER"] = os.path.normpath(
         "%s/subprojects/gstreamer/libs/gst/helpers/gst-plugin-scanner" % options.builddir)
@@ -76,7 +77,7 @@ def get_subprocess_env(options):
     setup_python_env(options, env)
 
     meson = get_meson()
-    targets_s = subprocess.check_output([sys.executable, meson, 'introspect', options.builddir, '--targets'])
+    targets_s = subprocess.check_output(meson + ['introspect', options.builddir, '--targets'])
     targets = json.loads(targets_s.decode())
     paths = set()
     mono_paths = set()
@@ -111,9 +112,8 @@ def get_subprocess_env(options):
     presets = set()
     encoding_targets = set()
     pkg_dirs = set()
-    if '--installed' in subprocess.check_output([sys.executable, meson, 'introspect', '-h']).decode():
-        installed_s = subprocess.check_output([sys.executable, meson, 'introspect',
-                                               options.builddir, '--installed'])
+    if '--installed' in subprocess.check_output(meson + ['introspect', '-h']).decode():
+        installed_s = subprocess.check_output(meson + ['introspect', options.builddir, '--installed'])
         for path, installpath in json.loads(installed_s.decode()).items():
             if path.endswith('.prs'):
                 presets.add(os.path.dirname(path))
@@ -171,13 +171,13 @@ def setup_python_env(options, env):
     else:
         sitepackages = site.getusersitepackages()
 
-    sitecustomize = os.path.join(
+    usercustomize = os.path.join(
         subprocess.check_output([sys.executable, '-c', 'import site; print(site.USER_SITE)'],
-        env={"PYTHONUSERBASE": PREFIX_DIR}).decode().strip("\n"), "sitecustomize.py")
+        env={"PYTHONUSERBASE": PREFIX_DIR}).decode().strip("\n"), "usercustomize.py")
 
-    custom_user_sitepackage = os.path.dirname(sitecustomize)
+    custom_user_sitepackage = os.path.dirname(usercustomize)
     os.makedirs(custom_user_sitepackage, exist_ok=True)
-    with open(sitecustomize, "w") as f:
+    with open(usercustomize, "w") as f:
          f.write("""import os
 import gi.overrides
 
@@ -198,8 +198,6 @@ if __name__ == "__main__":
     parser.add_argument("--srcdir",
                         default=SCRIPTDIR,
                         help="The top level source directory")
-    parser.add_argument("--gst-version", default="master",
-                        help="The GStreamer major version")
     options, args = parser.parse_known_args()
 
     if not os.path.exists(options.builddir):
@@ -213,6 +211,10 @@ if __name__ == "__main__":
               options.srcdir)
         exit(1)
 
+    # The following incantation will retrieve the current branch name.
+    gst_version = git("rev-parse", "--symbolic-full-name", "--abbrev-ref", "HEAD",
+                      repository_path=options.srcdir).strip('\n')
+
     if not args:
         if os.name is 'nt':
             args = [os.environ.get("COMSPEC", r"C:\WINDOWS\system32\cmd.exe")]
@@ -224,13 +226,13 @@ if __name__ == "__main__":
                 tmprc = tempfile.NamedTemporaryFile(mode='w')
                 with open(bashrc, 'r') as src:
                     shutil.copyfileobj(src, tmprc)
-                tmprc.write('\nexport PS1="[gst-%s] $PS1"' % options.gst_version)
+                tmprc.write('\nexport PS1="[gst-%s] $PS1"' % gst_version)
                 tmprc.flush()
                 # Let the GC remove the tmp file
                 args.append("--rcfile")
                 args.append(tmprc.name)
     try:
         exit(subprocess.call(args, cwd=options.srcdir, close_fds=False,
-                             env=get_subprocess_env(options)))
+                             env=get_subprocess_env(options, gst_version)))
     except subprocess.CalledProcessError as e:
         exit(e.returncode)

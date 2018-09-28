@@ -23,9 +23,9 @@ class GstBuildConfigurer:
         self.args = args
 
     def get_configs(self):
-        if self.options.no_error:
-            return []
-        return ['--werror']
+        if self.options.werror:
+            return ['--werror']
+        return []
 
     def configure_meson(self):
         if not self.options.reconfigure:
@@ -33,8 +33,9 @@ class GstBuildConfigurer:
                 print("Not reconfiguring")
                 return True
 
-        meson = get_meson()
-        if not meson:
+        try:
+            meson = get_meson()
+        except RuntimeError:
             print("Install mesonbuild to build %s: http://mesonbuild.com/\n"
                   "You can simply install it with:\n"
                   "    $ sudo pip3 install meson" % PROJECTNAME)
@@ -51,8 +52,8 @@ class GstBuildConfigurer:
         os.mkdir(build_dir)
 
         try:
-            subprocess.check_call(
-                [sys.executable, meson, "../"] + self.args + self.get_configs(), cwd=build_dir)
+            subprocess.check_call(meson + ["../"] + self.args + self.get_configs(),
+                                  cwd=build_dir)
             print("\nYou can now build GStreamer and its various subprojects running:\n"
                   " $ {} -C {!r}".format(os.path.basename(ninja), build_dir))
         except subprocess.CalledProcessError:
@@ -73,7 +74,7 @@ if __name__ == "__main__":
                         ' You can also use `ninja reconfigure` to just'
                         ' make sure meson is rerun but the build folder'
                         ' is kept.')
-    parser.add_argument("--no-error", action='store_true',
+    parser.add_argument("--werror", action='store_true',
                         default=False, help="Do not error out on warnings")
 
     options, args = parser.parse_known_args()
