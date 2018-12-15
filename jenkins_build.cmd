@@ -106,6 +106,7 @@ mkdir build
     -D rtsp_server=disabled  ^
     -D gstreamer:introspection=enabled ^
     -D gst-plugins-base:introspection=enabled ^
+    -D gst-plugins-base:gl=enabled ^
     -D gst-plugins-bad:gl=enabled ^
     -D gst-plugins-good:jpeg=enabled ^
     -D python=enabled ^
